@@ -65,8 +65,6 @@ body{font-size:1.2rem}
 'use strict';
 
 /* ---------- Impostazioni ---------- */
-// File di configurazione su GitHub (facoltativo): puoi aggiungere liste per sezione, es.
-// { "playlist": { "Live": ["https://.../lista.m3u"], "Film": ["https://.../catalogo.json"] } }
 var CONFIG_URL = 'https://raw.githubusercontent.com/micimax/ri-confing/main/config.json';
 var SECTIONS = ['Live', 'Film', 'Serie', 'Sport'];
 var ICON = { Live: '📡', Film: '🎬', Serie: '📺', Sport: '⚽' };
@@ -435,8 +433,17 @@ document.addEventListener('click', function (e) {
 /* ---------- Avvio ---------- */
 vid = $('vid');
 vid.addEventListener('playing', function () { $('perr').style.display = 'none'; });
+
+// Caricamento unificato delle configurazioni dal file centrale su GitHub
 fetch(CONFIG_URL + '?t=' + Date.now()).then(function (r) { return r.json(); })
-  .then(function (j) { st.cfg = j.playlist || {}; if (st.screen === 'home') render(); })
+  .then(function (j) {
+    st.cfg = j.playlist || {};
+    window.CONFIG_SITI = {
+      cb01: j.cb01 || 'https://cineblog001.delivery',
+      altadefinizione: j.altadefinizione || 'https://altadefinizione.mba'
+    };
+    if (st.screen === 'home') render();
+  })
   .catch(function () {});
 
 var cur = lsGet('ri_cur', null);
